@@ -2,31 +2,67 @@ package com.example.grupo_11;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Handler;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextView tv_bienvenida;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-         //Crear intent para la activity a la que llamaremos
-        Intent intent = new Intent(MainActivity.this, AvtivityBusqueda.class);
+
+        tv_bienvenida = findViewById(R.id.tv_bienvenida);
+
+        //Quito el ActionBar
+        Objects.requireNonNull(getSupportActionBar()).hide();
+
+        new TypewriterTask().execute(getString(R.string.splash_texto));
+    }
 
 
-        // Crear un objeto handler y usar el etodo postDelayed para retrasar la abertura de la ActivityBusqueda por 3 segundos
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(intent);
+    private class TypewriterTask extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... strings) {
+            String message = strings[0];
+            for (int i = 0; i < message.length(); i++) {
+                final int index = i;
+                try {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tv_bienvenida.setText(message.substring(0, index+1));
+                        }
+                    });
+                    Thread.sleep(100); // Poner tiempo de espera entre la subida de cada caracter
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        }, 3000);
+            return null;
+        }
 
-        
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
+            super.onPostExecute(aVoid);
+            //Crear intent para la activity a la que llamaremos
+            Intent intent = new Intent(MainActivity.this, ActivityBuscador.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }
