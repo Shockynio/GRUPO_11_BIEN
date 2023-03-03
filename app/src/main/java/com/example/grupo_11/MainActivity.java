@@ -1,68 +1,83 @@
 package com.example.grupo_11;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.content.Intent;
-import android.os.Handler;
-import android.widget.TextView;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.Toast;
 
-import java.util.Objects;
+import com.example.grupo_11.adaptadores.ListaEmpleadosAdapter;
+import com.example.grupo_11.db.DbEmpleados;
+import com.example.grupo_11.db.DbHelper;
+import com.example.grupo_11.entidades.Empleados;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
 
-    private TextView tv_bienvenida;
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
+
+    SearchView txtBuscar;
+    RecyclerView listaEmpleados;
+    ArrayList <Empleados> listaArrayEmpleados;
+    ListaEmpleadosAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        listaEmpleados= findViewById(R.id.listaEmpleados);
+        txtBuscar= findViewById(R.id.txtBuscar);
+        listaEmpleados.setLayoutManager(new LinearLayoutManager(this));
 
-        tv_bienvenida = findViewById(R.id.tv_bienvenida);
+        DbEmpleados dbEmpleados = new DbEmpleados((MainActivity.this));
 
-        //Quito el ActionBar
-        Objects.requireNonNull(getSupportActionBar()).hide();
+        listaArrayEmpleados = new ArrayList<>();
 
-        new TypewriterTask().execute(getString(R.string.splash_texto));
+        adapter = new ListaEmpleadosAdapter(dbEmpleados.mostrarEmpleados());
+        listaEmpleados.setAdapter(adapter);
+
+        txtBuscar.setOnQueryTextListener(this);
     }
 
+    public boolean onCreateOptionsMenu (Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_principal, menu);
 
-    private class TypewriterTask extends AsyncTask<String, Void, Void> {
-        @Override
-        protected Void doInBackground(String... strings) {
-            String message = strings[0];
-            for (int i = 0; i < message.length(); i++) {
-                final int index = i;
-                try {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tv_bienvenida.setText(message.substring(0, index+1));
-                        }
-                    });
-                    Thread.sleep(100); // Poner tiempo de espera entre la subida de cada caracter
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.menuNuevo:
+                nuevoRegistro();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
+    }
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+    private void nuevoRegistro(){
+        Intent intent = new Intent(this, NuevoActivity.class);
+        startActivity(intent);
+    }
 
-            super.onPostExecute(aVoid);
-            //Crear intent para la activity a la que llamaremos
-            Intent intent = new Intent(MainActivity.this, ActivityBuscador.class);
-            startActivity(intent);
-            finish();
-        }
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+
+        adapter.filtrado(s);
+        return false;
     }
 }

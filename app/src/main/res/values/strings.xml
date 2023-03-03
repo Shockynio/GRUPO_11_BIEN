@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">GRUPO_11</string>
+    <string name="hint_dni">DNI:</string>
+    <string name="hint_nombre">Nombre:</string>
+    <string name="hint_apellidos">Apellidos:</string>
+    <string name="hint_telefono">Telefono:</string>
+    <string name="hint_departamento">Departamento:</string>
+    <string name="hint_Localidad">Localidad:</string>
+    <string name="hint_direccion">Dirección:</string>
+    <string name="hint_email">Correo Electronico:</string>
+    <string name="hint_horario">Horario:</string>
+    <string name="btn_guarda">Guardar</string>
+    <string name="menu_nuevo">Nuevo registro</string>
 </resources>
