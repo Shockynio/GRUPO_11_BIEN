@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GRUPO_11</string>
+    <string name="app_name">BD Empresa </string>
     <string name="hint_dni">DNI:</string>
     <string name="hint_nombre">Nombre:</string>
     <string name="hint_apellidos">Apellidos:</string>
