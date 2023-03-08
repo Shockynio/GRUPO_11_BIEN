@@ -11,4 +11,13 @@
     <string name="hint_horario">Horario:</string>
     <string name="btn_guarda">Guardar</string>
     <string name="menu_nuevo">Nuevo registro</string>
+    <string-array name="departamentos_array">
+        <item>Finanzas</item>
+        <item>Marketing</item>
+        <item>Recursos Humanos</item>
+        <item>Logística</item>
+        <item>Gerencia</item>
+        <item>Producción</item>
+    </string-array>
+
 </resources>
